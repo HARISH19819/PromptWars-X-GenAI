@@ -6,10 +6,8 @@ import { useApp } from '@/context/AppContext';
 import {
   BookOpen,
   Clock,
-  Zap,
   CheckCircle2,
   ArrowRight,
-  ExternalLink,
   Target,
   Sparkles,
 } from 'lucide-react';

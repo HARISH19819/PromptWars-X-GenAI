@@ -2,20 +2,23 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '@/context/AppContext';
-import { InterviewEvaluation, InterviewAttempt } from '@/types';
+import {
+  InterviewEvaluation,
+  InterviewAttempt,
+  ISpeechRecognition,
+  WindowWithSpeech,
+  SpeechRecognitionEventLike,
+} from '@/types';
+
+type InterviewMode = 'project-defense' | 'technical' | 'hr' | 'behavioral';
 import {
   Mic,
   MicOff,
-  MessageSquare,
   Sparkles,
   ArrowRight,
   RotateCcw,
   CheckCircle2,
   AlertTriangle,
-  Send,
-  HelpCircle,
-  Award,
-  Zap,
   Edit3,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -48,19 +51,20 @@ export default function InterviewArenaPage() {
   // Live Speech-to-Text Microphone
   const [isRecording, setIsRecording] = useState(false);
   const [recognitionSupported, setRecognitionSupported] = useState(false);
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<ISpeechRecognition | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      if (SpeechRecognition) {
-        setRecognitionSupported(true);
-        const recognition = new SpeechRecognition();
+      const win = window as WindowWithSpeech;
+      const SpeechRecognitionClass = win.SpeechRecognition || win.webkitSpeechRecognition;
+      if (SpeechRecognitionClass) {
+        const timer = setTimeout(() => setRecognitionSupported(true), 0);
+        const recognition = new SpeechRecognitionClass();
         recognition.continuous = true;
         recognition.interimResults = true;
         recognition.lang = 'en-US';
 
-        recognition.onresult = (event: any) => {
+        recognition.onresult = (event: SpeechRecognitionEventLike) => {
           let currentTranscript = '';
           for (let i = event.resultIndex; i < event.results.length; i++) {
             currentTranscript += event.results[i][0].transcript;
@@ -68,7 +72,7 @@ export default function InterviewArenaPage() {
           setStudentAnswer((prev) => prev ? `${prev} ${currentTranscript}` : currentTranscript);
         };
 
-        recognition.onerror = (event: any) => {
+        recognition.onerror = (event: SpeechRecognitionEventLike) => {
           console.warn('Interview speech recognition error:', event.error);
           setIsRecording(false);
         };
@@ -78,6 +82,7 @@ export default function InterviewArenaPage() {
         };
 
         recognitionRef.current = recognition;
+        return () => clearTimeout(timer);
       }
     }
   }, []);
@@ -217,7 +222,7 @@ export default function InterviewArenaPage() {
           <button
             key={tab.id}
             type="button"
-            onClick={() => handleModeChange(tab.id as any)}
+            onClick={() => handleModeChange(tab.id as InterviewMode)}
             className={`p-3.5 rounded-2xl border text-left transition-all ${
               activeMode === tab.id
                 ? 'bg-amber-600/25 border-amber-500 shadow-md shadow-amber-600/20'
@@ -250,9 +255,10 @@ export default function InterviewArenaPage() {
             <button
               type="button"
               onClick={() => setIsEditingQuestion(!isEditingQuestion)}
-              className="text-xs text-slate-400 hover:text-white flex items-center gap-1"
+              aria-label={isEditingQuestion ? 'Finish editing question' : 'Customize interview question'}
+              className="text-xs text-slate-400 hover:text-white flex items-center gap-1 focus-visible:ring-2 focus-visible:ring-amber-400"
             >
-              <Edit3 className="w-3.5 h-3.5" />
+              <Edit3 className="w-3.5 h-3.5" aria-hidden="true" />
               <span>{isEditingQuestion ? 'Done Editing' : 'Customize Question'}</span>
             </button>
           </div>
@@ -262,6 +268,7 @@ export default function InterviewArenaPage() {
               type="text"
               value={currentQuestion}
               onChange={(e) => setCurrentQuestion(e.target.value)}
+              aria-label="Interview question text"
               className="w-full p-2.5 rounded-xl bg-slate-950 border border-white/10 text-xs text-white focus:outline-none focus:border-amber-500"
             />
           ) : (
@@ -280,7 +287,8 @@ export default function InterviewArenaPage() {
               <button
                 type="button"
                 onClick={toggleRecording}
-                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                aria-label={isRecording ? 'Stop speech recognition' : 'Start microphone voice input for response'}
+                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all focus-visible:ring-2 focus-visible:ring-amber-400 ${
                   isRecording
                     ? 'bg-rose-600 text-white animate-pulse'
                     : 'bg-slate-900 border border-slate-700 text-amber-300 hover:border-amber-400'
@@ -288,12 +296,12 @@ export default function InterviewArenaPage() {
               >
                 {isRecording ? (
                   <>
-                    <MicOff className="w-3 h-3" />
+                    <MicOff className="w-3 h-3" aria-hidden="true" />
                     <span>Listening... Stop Recording</span>
                   </>
                 ) : (
                   <>
-                    <Mic className="w-3 h-3" />
+                    <Mic className="w-3 h-3" aria-hidden="true" />
                     <span>Answer via Microphone</span>
                   </>
                 )}
@@ -305,12 +313,13 @@ export default function InterviewArenaPage() {
             rows={6}
             value={studentAnswer}
             onChange={(e) => setStudentAnswer(e.target.value)}
+            aria-label="Your structured interview answer"
             placeholder="Type your structured answer here, or click 'Answer via Microphone' to speak naturally. Include technical tradeoffs, quantified metrics, and clear justification..."
             className="w-full p-4 rounded-2xl bg-slate-950 border border-white/10 text-xs sm:text-sm text-slate-100 focus:outline-none focus:border-amber-500 leading-relaxed font-sans"
           />
 
           <div className="flex items-center justify-between pt-1">
-            <span className="text-[11px] text-slate-400">
+            <span className="text-[11px] text-slate-400" aria-live="polite">
               {studentAnswer.trim() ? `${studentAnswer.trim().split(/\s+/).length} words` : '0 words'}
             </span>
 

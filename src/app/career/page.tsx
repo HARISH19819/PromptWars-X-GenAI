@@ -4,13 +4,10 @@ import React from 'react';
 import { useApp } from '@/context/AppContext';
 import { RoleCategory } from '@/types';
 import {
-  Compass,
   CheckCircle2,
-  ArrowRight,
   Sparkles,
   Info,
   Target,
-  TrendingUp,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 

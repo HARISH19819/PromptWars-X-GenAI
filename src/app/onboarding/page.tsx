@@ -9,12 +9,7 @@ import {
   ArrowRight,
   ArrowLeft,
   Upload,
-  FileText,
-  User,
   CheckCircle2,
-  Clock,
-  Target,
-  Building,
   Zap,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -30,23 +25,26 @@ export default function OnboardingPage() {
   // Form states
   const [name, setName] = useState(user?.name && user.name !== 'Student Candidate' ? user.name : '');
   const [email, setEmail] = useState(user?.email && user.email !== 'student@campus.edu' ? user.email : '');
-  const [degree, setDegree] = useState('B.Tech');
+  const degree = 'B.Tech';
+  const semester = '7th Semester';
   const [branch, setBranch] = useState('Computer Science & Engineering');
   const [gradYear, setGradYear] = useState('2025');
-  const [semester, setSemester] = useState('7th Semester');
   const [college, setCollege] = useState('');
 
   const [resumeText, setResumeText] = useState('');
 
   // Sync if user context loads asynchronously
   React.useEffect(() => {
-    if (user?.name && user.name !== 'Student Candidate' && !name) {
-      setName(user.name);
-    }
-    if (user?.email && user.email !== 'student@campus.edu' && !email) {
-      setEmail(user.email);
-    }
-  }, [user]);
+    const timer = setTimeout(() => {
+      if (user?.name && user.name !== 'Student Candidate' && !name) {
+        setName(user.name);
+      }
+      if (user?.email && user.email !== 'student@campus.edu' && !email) {
+        setEmail(user.email);
+      }
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [user, name, email]);
 
   const [selectedInterests, setSelectedInterests] = useState<string[]>([
     'Full Stack Development',

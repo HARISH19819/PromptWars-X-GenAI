@@ -14,8 +14,6 @@ import {
   Briefcase,
   TrendingUp,
   Sparkles,
-  RotateCcw,
-  Zap,
   Menu,
   X,
   Target,
@@ -81,7 +79,7 @@ export const Navbar = () => {
           </div>
 
           {/* Desktop Nav Items */}
-          <nav className="hidden xl:flex items-center gap-1">
+          <nav aria-label="Main Navigation" className="hidden xl:flex items-center gap-1">
             {navLinks.map((link) => {
               const Icon = link.icon;
               const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
@@ -89,13 +87,13 @@ export const Navbar = () => {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 ${
                     isActive
                       ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 shadow-sm'
                       : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-indigo-400' : 'text-slate-400'}`} />
+                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-indigo-400' : 'text-slate-400'}`} aria-hidden="true" />
                   {link.name}
                   {link.badge && (
                     <span className="text-[9px] px-1 py-0.2 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-mono">
@@ -113,18 +111,20 @@ export const Navbar = () => {
             <Link
               href="/gd"
               title="Join or host a live peer group discussion"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-emerald-300 bg-emerald-950/60 border border-emerald-500/40 hover:bg-emerald-900/60 hover:border-emerald-400 shadow-sm transition-all"
+              aria-label="Live GD Meet - Join or host a live group discussion"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-emerald-300 bg-emerald-950/60 border border-emerald-500/40 hover:bg-emerald-900/60 hover:border-emerald-400 shadow-sm transition-all focus-visible:ring-2 focus-visible:ring-emerald-400"
             >
-              <Users className="w-3.5 h-3.5 text-emerald-400" />
+              <Users className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" />
               <span className="hidden sm:inline">Live GD Meet</span>
             </Link>
 
             {/* Readiness Mini Badge */}
             <Link
               href="/dashboard"
-              className="hidden sm:flex items-center gap-2 pl-2.5 pr-3 py-1 rounded-full bg-slate-900/90 border border-slate-700/60 hover:border-indigo-500/50 transition-colors"
+              aria-label={`Overall placement readiness is ${profile.readiness.overall}%`}
+              className="hidden sm:flex items-center gap-2 pl-2.5 pr-3 py-1 rounded-full bg-slate-900/90 border border-slate-700/60 hover:border-indigo-500/50 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400"
             >
-              <div className="relative flex items-center justify-center">
+              <div className="relative flex items-center justify-center" aria-hidden="true">
                 <span className="flex h-2.5 w-2.5 rounded-full bg-indigo-500 animate-ping absolute opacity-75" />
                 <span className="relative flex h-2 w-2 rounded-full bg-indigo-400" />
               </div>
@@ -142,18 +142,25 @@ export const Navbar = () => {
                 <button
                   type="button"
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="flex items-center gap-2 px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-700 hover:border-indigo-500 text-slate-200 text-xs font-medium transition-all"
+                  aria-label="User account and profile menu"
+                  aria-haspopup="true"
+                  aria-expanded={userDropdownOpen}
+                  className="flex items-center gap-2 px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-700 hover:border-indigo-500 text-slate-200 text-xs font-medium transition-all focus-visible:ring-2 focus-visible:ring-indigo-400"
                 >
-                  <div className="w-6 h-6 rounded-lg bg-indigo-600/30 text-indigo-300 flex items-center justify-center text-xs font-bold">
+                  <div className="w-6 h-6 rounded-lg bg-indigo-600/30 text-indigo-300 flex items-center justify-center text-xs font-bold" aria-hidden="true">
                     {user.name.charAt(0)}
                   </div>
                   <span className="hidden md:inline max-w-[100px] truncate">{user.name.split(' ')[0]}</span>
-                  <ChevronDown className="w-3 h-3 text-slate-400" />
+                  <ChevronDown className="w-3 h-3 text-slate-400" aria-hidden="true" />
                 </button>
 
                 {/* Dropdown Menu */}
                 {userDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-56 rounded-2xl bg-slate-950 border border-white/10 shadow-2xl py-2 z-50 text-xs text-slate-300">
+                  <div
+                    role="menu"
+                    aria-label="User options"
+                    className="absolute right-0 mt-2 w-56 rounded-2xl bg-slate-950 border border-white/10 shadow-2xl py-2 z-50 text-xs text-slate-300"
+                  >
                     <div className="px-4 py-2 border-b border-white/5">
                       <p className="font-bold text-white truncate">{user.name}</p>
                       <p className="text-[11px] text-slate-400 truncate">{user.email}</p>
@@ -161,19 +168,21 @@ export const Navbar = () => {
 
                     <Link
                       href="/profile"
+                      role="menuitem"
                       onClick={() => setUserDropdownOpen(false)}
                       className="flex items-center gap-2 px-4 py-2 hover:bg-slate-900 hover:text-white transition-colors"
                     >
-                      <User className="w-3.5 h-3.5 text-indigo-400" />
+                      <User className="w-3.5 h-3.5 text-indigo-400" aria-hidden="true" />
                       <span>My Placement Twin Profile</span>
                     </Link>
 
                     <Link
                       href="/settings"
+                      role="menuitem"
                       onClick={() => setUserDropdownOpen(false)}
                       className="flex items-center gap-2 px-4 py-2 hover:bg-slate-900 hover:text-white transition-colors"
                     >
-                      <SettingsIcon className="w-3.5 h-3.5 text-slate-400" />
+                      <SettingsIcon className="w-3.5 h-3.5 text-slate-400" aria-hidden="true" />
                       <span>Settings &amp; API Keys</span>
                     </Link>
 
@@ -181,19 +190,21 @@ export const Navbar = () => {
 
                     <Link
                       href="/login"
+                      role="menuitem"
                       onClick={() => setUserDropdownOpen(false)}
                       className="flex items-center gap-2 px-4 py-2 hover:bg-slate-900 hover:text-white transition-colors"
                     >
-                      <LogIn className="w-3.5 h-3.5 text-cyan-400" />
+                      <LogIn className="w-3.5 h-3.5 text-cyan-400" aria-hidden="true" />
                       <span>Login with Another Account</span>
                     </Link>
 
                     <Link
                       href="/register"
+                      role="menuitem"
                       onClick={() => setUserDropdownOpen(false)}
                       className="flex items-center gap-2 px-4 py-2 hover:bg-slate-900 hover:text-white transition-colors"
                     >
-                      <UserPlus className="w-3.5 h-3.5 text-emerald-400" />
+                      <UserPlus className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" />
                       <span>Register New Student</span>
                     </Link>
 
@@ -201,13 +212,14 @@ export const Navbar = () => {
 
                     <button
                       type="button"
+                      role="menuitem"
                       onClick={() => {
                         logout();
                         setUserDropdownOpen(false);
                       }}
                       className="w-full text-left flex items-center gap-2 px-4 py-2 text-rose-400 hover:bg-rose-950/30 transition-colors"
                     >
-                      <LogOut className="w-3.5 h-3.5" />
+                      <LogOut className="w-3.5 h-3.5" aria-hidden="true" />
                       <span>Sign Out</span>
                     </button>
                   </div>
@@ -219,7 +231,7 @@ export const Navbar = () => {
                   href="/login"
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
                 >
-                  <LogIn className="w-3.5 h-3.5" />
+                  <LogIn className="w-3.5 h-3.5" aria-hidden="true" />
                   <span>Sign In</span>
                 </Link>
 
@@ -227,7 +239,7 @@ export const Navbar = () => {
                   href="/register"
                   className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-600/30 transition-all"
                 >
-                  <UserPlus className="w-3.5 h-3.5" />
+                  <UserPlus className="w-3.5 h-3.5" aria-hidden="true" />
                   <span>Register</span>
                 </Link>
               </div>
@@ -235,10 +247,13 @@ export const Navbar = () => {
 
             {/* Mobile menu hamburger */}
             <button
+              type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="xl:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+              aria-label={mobileMenuOpen ? 'Close main navigation menu' : 'Open main navigation menu'}
+              aria-expanded={mobileMenuOpen}
+              className="xl:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 focus-visible:ring-2 focus-visible:ring-indigo-400"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" aria-hidden="true" /> : <Menu className="w-5 h-5" aria-hidden="true" />}
             </button>
           </div>
         </div>

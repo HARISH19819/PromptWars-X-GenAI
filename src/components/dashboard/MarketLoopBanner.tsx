@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Briefcase, ArrowRight, Zap, RefreshCw } from 'lucide-react';
+import { Zap, RefreshCw } from 'lucide-react';
 
 export const MarketLoopBanner = () => {
   return (

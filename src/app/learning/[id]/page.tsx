@@ -12,10 +12,6 @@ import {
   ExternalLink,
   Target,
   Sparkles,
-  Zap,
-  PlayCircle,
-  FileCode,
-  Layers,
   ArrowRight,
 } from 'lucide-react';
 
@@ -27,14 +23,14 @@ export default function ModuleDetailPage({ params }: PageProps) {
   const { id } = use(params);
   const { profile, completeLearningModule } = useApp();
 
-  const module = profile.learningModules.find((m) => m.id === id);
+  const currentModule = profile.learningModules.find((m) => m.id === id);
 
-  if (!module) {
+  if (!currentModule) {
     return notFound();
   }
 
   const handleComplete = () => {
-    completeLearningModule(module.id);
+    completeLearningModule(currentModule.id);
   };
 
   return (
@@ -54,17 +50,17 @@ export default function ModuleDetailPage({ params }: PageProps) {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-              {module.category}
+              {currentModule.category}
             </span>
             <span className="text-xs text-slate-400 flex items-center gap-1 bg-slate-900/60 px-2.5 py-1 rounded-full border border-white/5">
-              <Clock className="w-3.5 h-3.5" /> {module.estimatedTime}
+              <Clock className="w-3.5 h-3.5" /> {currentModule.estimatedTime}
             </span>
             <span className="text-xs text-slate-400 bg-slate-900/60 px-2.5 py-1 rounded-full border border-white/5">
-              Difficulty: {module.difficulty}
+              Difficulty: {currentModule.difficulty}
             </span>
           </div>
 
-          {module.completed ? (
+          {currentModule.completed ? (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
               <CheckCircle2 className="w-4 h-4" /> Completed &amp; Profile Updated
             </span>
@@ -74,17 +70,17 @@ export default function ModuleDetailPage({ params }: PageProps) {
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs text-white bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-600/30 transition-all hover:scale-[1.02]"
             >
               <CheckCircle2 className="w-4 h-4" />
-              <span>Mark as Completed (+{module.scoreBoostEstimate}%)</span>
+              <span>Mark as Completed (+{currentModule.scoreBoostEstimate}%)</span>
             </button>
           )}
         </div>
 
         <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-          {module.title}
+          {currentModule.title}
         </h1>
 
         <p className="text-sm text-slate-300 leading-relaxed max-w-3xl">
-          {module.description}
+          {currentModule.description}
         </p>
 
         {/* Diagnostic Rationale Alert */}
@@ -94,7 +90,7 @@ export default function ModuleDetailPage({ params }: PageProps) {
           </div>
           <div>
             <h4 className="font-bold text-indigo-300 mb-0.5">Why Placement360 Recommended This:</h4>
-            <p className="text-slate-300 leading-relaxed">{module.whyNeeded}</p>
+            <p className="text-slate-300 leading-relaxed">{currentModule.whyNeeded}</p>
           </div>
         </div>
       </div>
@@ -107,7 +103,7 @@ export default function ModuleDetailPage({ params }: PageProps) {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {module.resources.map((res, idx) => (
+          {currentModule.resources.map((res, idx) => (
             <div
               key={idx}
               className="glass-panel glass-panel-hover rounded-2xl p-5 flex flex-col justify-between space-y-4 border border-white/10"
@@ -146,7 +142,7 @@ export default function ModuleDetailPage({ params }: PageProps) {
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-          {module.keyTakeaways.map((point, idx) => (
+          {currentModule.keyTakeaways.map((point, idx) => (
             <div
               key={idx}
               className="p-3.5 rounded-xl bg-slate-900/60 border border-white/5 flex items-start gap-2.5 text-slate-300"
@@ -170,7 +166,7 @@ export default function ModuleDetailPage({ params }: PageProps) {
         </div>
 
         <div className="flex items-center gap-3">
-          {!module.completed && (
+          {!currentModule.completed && (
             <button
               onClick={handleComplete}
               className="px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 transition-colors"

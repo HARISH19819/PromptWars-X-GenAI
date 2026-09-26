@@ -2,17 +2,15 @@
 
 import React, { useState, useEffect, use } from 'react';
 import Link from 'next/link';
-import { notFound, useRouter } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { useApp } from '@/context/AppContext';
 import {
   CheckCircle2,
-  AlertCircle,
   Clock,
   ArrowRight,
   ArrowLeft,
   RotateCcw,
   Sparkles,
-  Zap,
   HelpCircle,
   Award,
 } from 'lucide-react';
@@ -24,7 +22,6 @@ interface PageProps {
 
 export default function AssessmentDetailPage({ params }: PageProps) {
   const { id } = use(params);
-  const router = useRouter();
   const { profile, submitAssessmentAttempt } = useApp();
 
   const assessment = profile.assessments.find((a) => a.id === id);
@@ -164,15 +161,21 @@ export default function AssessmentDetailPage({ params }: PageProps) {
           </div>
 
           {/* Options */}
-          <div className="space-y-3 pt-2">
+          <div
+            role="radiogroup"
+            aria-label={`Question ${currentIndex + 1} options`}
+            className="space-y-3 pt-2"
+          >
             {currentQ.options.map((opt, optIdx) => {
               const isSelected = selectedAnswers[currentIndex] === optIdx;
               return (
                 <button
                   key={optIdx}
                   type="button"
+                  role="radio"
+                  aria-checked={isSelected}
                   onClick={() => handleSelectOption(optIdx)}
-                  className={`w-full text-left p-4 rounded-xl border text-xs sm:text-sm font-medium transition-all flex items-start gap-3 ${
+                  className={`w-full text-left p-4 rounded-xl border text-xs sm:text-sm font-medium transition-all flex items-start gap-3 focus-visible:ring-2 focus-visible:ring-indigo-400 ${
                     isSelected
                       ? 'bg-indigo-600/25 border-indigo-500 text-white shadow-md shadow-indigo-600/20'
                       : 'bg-slate-900/60 border-white/10 text-slate-300 hover:bg-slate-800/80 hover:border-white/20'

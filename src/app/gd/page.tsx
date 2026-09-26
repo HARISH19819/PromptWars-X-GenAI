@@ -2,18 +2,14 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '@/context/AppContext';
-import { GDSession, GDFeedback } from '@/types';
 import {
-  Users,
   Calendar,
   Clock,
   Video,
   CheckCircle2,
   ExternalLink,
   Sparkles,
-  AlertCircle,
   MessageSquare,
-  Send,
   PlusCircle,
   Mic,
   MicOff,
@@ -22,13 +18,22 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
+import {
+  GDFeedback,
+  ISpeechRecognition,
+  WindowWithSpeech,
+  SpeechRecognitionEventLike,
+} from '@/types';
+
+type GDCategory = 'AI & Tech' | 'Current Affairs' | 'Business & Economy' | 'Ethics & Society';
+
 export default function GDPracticePage() {
-  const { profile, user, bookGDSession, cancelGDBooking, createGDSession, submitGDFeedback } = useApp();
+  const { profile, bookGDSession, cancelGDBooking, createGDSession, submitGDFeedback } = useApp();
 
   // Modal State for Creating Custom Real Session
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newTopic, setNewTopic] = useState('');
-  const [newCategory, setNewCategory] = useState<'AI & Tech' | 'Current Affairs' | 'Business & Economy' | 'Ethics & Society'>('AI & Tech');
+  const [newCategory, setNewCategory] = useState<GDCategory>('AI & Tech');
   const [newContext, setNewContext] = useState('');
   const [newDate, setNewDate] = useState('Today, Live Room');
   const [newTime, setNewTime] = useState('Immediate / Live');
@@ -45,19 +50,20 @@ export default function GDPracticePage() {
   // Live Speech Recognition
   const [isRecording, setIsRecording] = useState(false);
   const [recognitionSupported, setRecognitionSupported] = useState(false);
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<ISpeechRecognition | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      if (SpeechRecognition) {
-        setRecognitionSupported(true);
-        const recognition = new SpeechRecognition();
+      const win = window as WindowWithSpeech;
+      const SpeechRecognitionClass = win.SpeechRecognition || win.webkitSpeechRecognition;
+      if (SpeechRecognitionClass) {
+        const timer = setTimeout(() => setRecognitionSupported(true), 0);
+        const recognition = new SpeechRecognitionClass();
         recognition.continuous = true;
         recognition.interimResults = true;
         recognition.lang = 'en-US';
 
-        recognition.onresult = (event: any) => {
+        recognition.onresult = (event: SpeechRecognitionEventLike) => {
           let currentTranscript = '';
           for (let i = event.resultIndex; i < event.results.length; i++) {
             currentTranscript += event.results[i][0].transcript;
@@ -65,7 +71,7 @@ export default function GDPracticePage() {
           setTranscriptText((prev) => prev ? `${prev} ${currentTranscript}` : currentTranscript);
         };
 
-        recognition.onerror = (event: any) => {
+        recognition.onerror = (event: SpeechRecognitionEventLike) => {
           console.warn('Speech recognition error:', event.error);
           setIsRecording(false);
         };
@@ -75,6 +81,7 @@ export default function GDPracticePage() {
         };
 
         recognitionRef.current = recognition;
+        return () => clearTimeout(timer);
       }
     }
   }, []);
@@ -454,26 +461,33 @@ export default function GDPracticePage() {
 
       {/* Host New GD Session Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="host-session-title"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md"
+        >
           <div className="glass-panel w-full max-w-lg rounded-3xl p-6 sm:p-8 border border-white/10 shadow-2xl space-y-5">
             <div className="flex items-center justify-between pb-3 border-b border-white/5">
-              <h3 className="text-lg font-bold text-white tracking-tight flex items-center gap-2">
-                <Video className="w-5 h-5 text-indigo-400" />
+              <h3 id="host-session-title" className="text-lg font-bold text-white tracking-tight flex items-center gap-2">
+                <Video className="w-5 h-5 text-indigo-400" aria-hidden="true" />
                 Host a Live Peer GD Room
               </h3>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-white"
+                aria-label="Close host session modal"
+                className="p-1 rounded-lg text-slate-400 hover:text-white focus-visible:ring-2 focus-visible:ring-indigo-400"
               >
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5" aria-hidden="true" />
               </button>
             </div>
 
             <form onSubmit={handleCreateSessionSubmit} className="space-y-4 text-xs">
               <div className="space-y-1">
-                <label className="font-semibold text-slate-300">Discussion Topic</label>
+                <label htmlFor="gd-new-topic" className="font-semibold text-slate-300">Discussion Topic</label>
                 <input
+                  id="gd-new-topic"
                   type="text"
                   required
                   value={newTopic}
@@ -484,10 +498,11 @@ export default function GDPracticePage() {
               </div>
 
               <div className="space-y-1">
-                <label className="font-semibold text-slate-300">Category</label>
+                <label htmlFor="gd-new-category" className="font-semibold text-slate-300">Category</label>
                 <select
+                  id="gd-new-category"
                   value={newCategory}
-                  onChange={(e) => setNewCategory(e.target.value as any)}
+                  onChange={(e) => setNewCategory(e.target.value as GDCategory)}
                   className="w-full p-2.5 rounded-xl bg-slate-950 border border-white/10 text-white focus:outline-none focus:border-indigo-500"
                 >
                   <option value="AI & Tech">AI &amp; Tech</option>
@@ -499,8 +514,9 @@ export default function GDPracticePage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="font-semibold text-slate-300">Date</label>
+                  <label htmlFor="gd-new-date" className="font-semibold text-slate-300">Date</label>
                   <input
+                    id="gd-new-date"
                     type="text"
                     value={newDate}
                     onChange={(e) => setNewDate(e.target.value)}
@@ -508,8 +524,9 @@ export default function GDPracticePage() {
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="font-semibold text-slate-300">Time</label>
+                  <label htmlFor="gd-new-time" className="font-semibold text-slate-300">Time</label>
                   <input
+                    id="gd-new-time"
                     type="text"
                     value={newTime}
                     onChange={(e) => setNewTime(e.target.value)}
@@ -519,10 +536,11 @@ export default function GDPracticePage() {
               </div>
 
               <div className="space-y-1">
-                <label className="font-semibold text-slate-300">
+                <label htmlFor="gd-custom-meet-url" className="font-semibold text-slate-300">
                   Custom Video Room URL (Optional)
                 </label>
                 <input
+                  id="gd-custom-meet-url"
                   type="url"
                   value={customMeetUrl}
                   onChange={(e) => setCustomMeetUrl(e.target.value)}

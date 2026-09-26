@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { SkillItem, RoleCategory } from '@/types';
-import { CheckCircle2, AlertCircle, XCircle, ChevronDown, ChevronUp, ArrowRight, BookOpen, Sparkles } from 'lucide-react';
+import { CheckCircle2, AlertCircle, XCircle, ChevronDown, ChevronUp, ArrowRight, BookOpen } from 'lucide-react';
 
 interface SkillGapCardProps {
   skills: SkillItem[];

@@ -6,10 +6,17 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { topic, transcript } = body;
 
-    if (!topic || !transcript) {
+    if (!topic || !transcript || typeof topic !== 'string' || typeof transcript !== 'string') {
       return NextResponse.json(
-        { error: 'Topic and transcript/speech input are required' },
+        { error: 'Topic and transcript/speech input must be valid non-empty strings' },
         { status: 400 }
+      );
+    }
+
+    if (transcript.length > 20000 || topic.length > 2000) {
+      return NextResponse.json(
+        { error: 'Payload exceeds allowable length limit' },
+        { status: 413 }
       );
     }
 

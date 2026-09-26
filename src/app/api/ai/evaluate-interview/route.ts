@@ -6,10 +6,17 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { question, answer, mode, targetRole } = body;
 
-    if (!question || !answer) {
+    if (!question || !answer || typeof question !== 'string' || typeof answer !== 'string') {
       return NextResponse.json(
-        { error: 'Question and answer are required' },
+        { error: 'Question and answer must be valid non-empty strings' },
         { status: 400 }
+      );
+    }
+
+    if (answer.length > 20000 || question.length > 2000) {
+      return NextResponse.json(
+        { error: 'Payload exceeds allowable length limit' },
+        { status: 413 }
       );
     }
 

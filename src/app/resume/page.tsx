@@ -4,14 +4,10 @@ import React, { useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import { RoleCategory, ResumeATSAnalysis } from '@/types';
 import {
-  FileText,
-  Upload,
   CheckCircle2,
   AlertTriangle,
   ExternalLink,
   Sparkles,
-  ArrowRight,
-  Target,
   RefreshCw,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -99,11 +95,12 @@ export default function ResumeCenterPage() {
       <div className="glass-panel rounded-2xl p-6 border border-white/10 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-300">
+            <label htmlFor="benchmark-target-role" className="text-xs font-semibold text-slate-300">
               Benchmark Target Role for ATS Scoring
             </label>
             <div className="flex items-center gap-3">
               <select
+                id="benchmark-target-role"
                 value={selectedRole}
                 onChange={(e) => setSelectedRole(e.target.value as RoleCategory)}
                 className="p-2.5 rounded-xl bg-slate-950 border border-white/10 text-xs text-white focus:outline-none focus:border-indigo-500"
@@ -128,9 +125,23 @@ export default function ResumeCenterPage() {
                 <span>Rescore Resume with Gemini</span>
               </button>
             </div>
+
+            <div className="space-y-1 pt-2">
+              <label htmlFor="resume-edit-text" className="text-xs font-semibold text-slate-300">
+                Update or Paste Resume Text
+              </label>
+              <textarea
+                id="resume-edit-text"
+                rows={3}
+                value={resumeText}
+                onChange={(e) => setResumeText(e.target.value)}
+                placeholder="Paste updated resume text here to rescore..."
+                className="w-full p-2.5 rounded-xl bg-slate-950 border border-white/10 text-xs text-white focus:outline-none focus:border-indigo-500 font-mono"
+              />
+            </div>
           </div>
 
-          <div className="text-[11px] text-slate-400 bg-slate-900/60 p-3 rounded-xl border border-white/5 max-w-sm">
+          <div className="text-[11px] text-slate-400 bg-slate-900/60 p-3 rounded-xl border border-white/5 max-w-sm self-start">
             <span className="font-semibold text-slate-300 block mb-0.5">ATS-Style Disclosure:</span>
             Scored using semantic keyword parsing and role taxonomy. Real recruiter systems may use proprietary screening heuristics.
           </div>

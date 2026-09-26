@@ -1,4 +1,4 @@
-import { StudentProfile } from '@/types';
+import type { StudentProfile } from '../types/index.ts';
 
 export const DEFAULT_STARTER_PROFILE: StudentProfile = {
   isDemoUser: false,

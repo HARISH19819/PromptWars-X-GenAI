@@ -273,3 +273,37 @@ export interface StudentProfile {
   }[];
   isDemoUser?: boolean;
 }
+
+export interface SpeechRecognitionResultItem {
+  transcript: string;
+}
+
+export interface SpeechRecognitionResultList {
+  length: number;
+  [index: number]: {
+    [index: number]: SpeechRecognitionResultItem;
+  };
+}
+
+export interface SpeechRecognitionEventLike {
+  resultIndex: number;
+  results: SpeechRecognitionResultList;
+  error?: string;
+}
+
+export interface ISpeechRecognition {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onresult: ((event: SpeechRecognitionEventLike) => void) | null;
+  onerror: ((event: SpeechRecognitionEventLike) => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+}
+
+export interface WindowWithSpeech extends Window {
+  SpeechRecognition?: new () => ISpeechRecognition;
+  webkitSpeechRecognition?: new () => ISpeechRecognition;
+}
+

@@ -3,19 +3,14 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
-import { JobMatchItem } from '@/types';
 import {
-  Briefcase,
   Search,
   ExternalLink,
-  CheckCircle2,
-  AlertTriangle,
   Zap,
   Building,
   MapPin,
   Clock,
   Sparkles,
-  ArrowRight,
   TrendingUp,
   Globe,
   Compass,
@@ -93,8 +88,11 @@ export default function JobsPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
           <div className="sm:col-span-7">
-            <label className="text-[11px] font-semibold text-slate-400 block mb-1">Target Keyword / Job Role</label>
+            <label htmlFor="universal-job-keyword-input" className="text-[11px] font-semibold text-slate-400 block mb-1">
+              Target Keyword / Job Role
+            </label>
             <input
+              id="universal-job-keyword-input"
               type="text"
               value={liveQuery}
               onChange={(e) => setLiveQuery(e.target.value)}
@@ -103,8 +101,11 @@ export default function JobsPage() {
             />
           </div>
           <div className="sm:col-span-5">
-            <label className="text-[11px] font-semibold text-slate-400 block mb-1">Location</label>
+            <label htmlFor="universal-job-location-input" className="text-[11px] font-semibold text-slate-400 block mb-1">
+              Location
+            </label>
             <input
+              id="universal-job-location-input"
               type="text"
               value={liveLocation}
               onChange={(e) => setLiveLocation(e.target.value)}
@@ -212,11 +213,12 @@ export default function JobsPage() {
       <div className="glass-panel rounded-2xl p-4 border border-white/10 space-y-3">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="relative w-full sm:w-80">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" aria-hidden="true" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              aria-label="Filter opportunities by role, company, or skill"
               placeholder="Filter by role, company, or skill..."
               className="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-950 border border-white/10 text-xs text-white focus:outline-none focus:border-cyan-500"
             />
@@ -335,10 +337,11 @@ export default function JobsPage() {
                 href={job.originalJobUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 transition-all shadow-md shadow-cyan-600/30 hover:scale-[1.02]"
+                aria-label={`Apply for ${job.title} role at ${job.company} on official portal`}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 transition-all shadow-md shadow-cyan-600/30 hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-cyan-400"
               >
                 <span>Apply on Official Portal</span>
-                <ExternalLink className="w-3.5 h-3.5" />
+                <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
               </a>
             </div>
           </div>

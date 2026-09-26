@@ -70,34 +70,38 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   // Initialize from storage or default to standard student candidate
   useEffect(() => {
-    const storedUser = getStoredUser();
-    if (storedUser) {
-      setUser(storedUser);
-      const storedProfile = getStoredProfile(storedUser.uid);
-      if (storedProfile) {
-        setProfile(storedProfile);
+    const timer = setTimeout(() => {
+      const storedUser = getStoredUser();
+      if (storedUser) {
+        setUser(storedUser);
+        const storedProfile = getStoredProfile(storedUser.uid);
+        if (storedProfile) {
+          setProfile(storedProfile);
+        } else {
+          setProfile(DEFAULT_STARTER_PROFILE);
+        }
       } else {
-        setProfile(DEFAULT_STARTER_PROFILE);
+        // Standard starter candidate profile
+        const defaultUser: AuthUser = {
+          uid: 'user_candidate',
+          name: 'Student Candidate',
+          email: 'student@campus.edu',
+          isDemo: false,
+        };
+        setUser(defaultUser);
+        setStoredUser(defaultUser);
+        const existing = getStoredProfile('user_candidate');
+        if (existing) {
+          setProfile(existing);
+        } else {
+          saveStoredProfile('user_candidate', DEFAULT_STARTER_PROFILE);
+          setProfile(DEFAULT_STARTER_PROFILE);
+        }
       }
-    } else {
-      // Standard starter candidate profile
-      const defaultUser: AuthUser = {
-        uid: 'user_candidate',
-        name: 'Student Candidate',
-        email: 'student@campus.edu',
-        isDemo: false,
-      };
-      setUser(defaultUser);
-      setStoredUser(defaultUser);
-      const existing = getStoredProfile('user_candidate');
-      if (existing) {
-        setProfile(existing);
-      } else {
-        saveStoredProfile('user_candidate', DEFAULT_STARTER_PROFILE);
-        setProfile(DEFAULT_STARTER_PROFILE);
-      }
-    }
-    setIsLoading(false);
+      setIsLoading(false);
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, []);
 
   // Sync profile changes to storage

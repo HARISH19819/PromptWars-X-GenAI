@@ -4,15 +4,9 @@ import React, { useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import {
   User,
-  GraduationCap,
   Building,
-  Target,
-  Sparkles,
   RotateCcw,
   CheckCircle2,
-  Clock,
-  Briefcase,
-  Mail,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 

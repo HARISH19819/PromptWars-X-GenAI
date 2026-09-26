@@ -3,19 +3,15 @@
 import React, { useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import {
-  Settings,
   Key,
-  Database,
   Trash2,
   CheckCircle2,
-  AlertCircle,
-  Sparkles,
   Shield,
   RotateCcw,
 } from 'lucide-react';
 
 export default function SettingsPage() {
-  const { profile, resetProfileData } = useApp();
+  const { resetProfileData } = useApp();
 
   const [geminiKeyInput, setGeminiKeyInput] = useState('');
   const [keySaved, setKeySaved] = useState(false);

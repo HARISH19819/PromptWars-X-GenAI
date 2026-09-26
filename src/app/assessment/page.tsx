@@ -7,11 +7,8 @@ import {
   CheckCircle2,
   Clock,
   ArrowRight,
-  Target,
-  Sparkles,
   AlertCircle,
   Award,
-  Zap,
 } from 'lucide-react';
 
 export default function AssessmentHubPage() {

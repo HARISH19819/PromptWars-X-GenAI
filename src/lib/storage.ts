@@ -1,5 +1,4 @@
-import { StudentProfile } from '@/types';
-import { DEFAULT_STARTER_PROFILE } from './demoData';
+import type { StudentProfile } from '../types/index.ts';
 
 const STORAGE_KEY = 'placement360_user_profile';
 const AUTH_KEY = 'placement360_auth_user';

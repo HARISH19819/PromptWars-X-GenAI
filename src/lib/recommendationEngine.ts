@@ -1,4 +1,4 @@
-import { StudentProfile, NextBestAction, PlacementReadinessBreakdown } from '@/types';
+import type { StudentProfile, NextBestAction, PlacementReadinessBreakdown } from '../types/index.ts';
 
 /**
  * Calculates student readiness score using configurable hackathon weights:

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { PlacementReadinessBreakdown } from '@/types';
-import { Info, Award, CheckCircle2 } from 'lucide-react';
+import { Info, Award } from 'lucide-react';
 
 interface PlacementReadinessDialProps {
   readiness: PlacementReadinessBreakdown;
@@ -50,8 +50,15 @@ export const PlacementReadinessDial: React.FC<PlacementReadinessDialProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center pt-6">
         {/* Circular Gauge */}
         <div className="md:col-span-4 flex flex-col items-center justify-center">
-          <div className="relative w-36 h-36 flex items-center justify-center">
-            <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 128 128">
+          <div
+            className="relative w-36 h-36 flex items-center justify-center"
+            role="progressbar"
+            aria-valuenow={readiness.overall}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label={`Overall Placement Readiness: ${readiness.overall}%`}
+          >
+            <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 128 128" aria-hidden="true">
               {/* Background ring */}
               <circle
                 cx="64"
@@ -102,7 +109,7 @@ export const PlacementReadinessDial: React.FC<PlacementReadinessDialProps> = ({
                 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
                 : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
             }`}>
-              <Award className="w-3 h-3" />
+              <Award className="w-3 h-3" aria-hidden="true" />
               {readiness.overall >= 75 ? 'Tier-1 Interview Ready' : readiness.overall >= 60 ? 'Competitive Fresher' : 'Foundations in Progress'}
             </span>
           </div>
@@ -114,13 +121,20 @@ export const PlacementReadinessDial: React.FC<PlacementReadinessDialProps> = ({
             <div key={cat.label} className="space-y-1">
               <div className="flex justify-between items-center text-xs">
                 <span className="text-slate-300 font-medium flex items-center gap-1.5">
-                  <span className={`w-2 h-2 rounded-full ${cat.color}`} />
+                  <span className={`w-2 h-2 rounded-full ${cat.color}`} aria-hidden="true" />
                   {cat.label}
                   <span className="text-[10px] text-slate-500 font-normal">({cat.weight})</span>
                 </span>
                 <span className="font-bold text-slate-200">{cat.value}%</span>
               </div>
-              <div className="w-full h-2 rounded-full bg-slate-800/80 overflow-hidden">
+              <div
+                className="w-full h-2 rounded-full bg-slate-800/80 overflow-hidden"
+                role="progressbar"
+                aria-label={`${cat.label} readiness score`}
+                aria-valuenow={cat.value}
+                aria-valuemin={0}
+                aria-valuemax={100}
+              >
                 <div
                   className={`h-full rounded-full transition-all duration-700 ease-out ${cat.color}`}
                   style={{ width: `${cat.value}%` }}

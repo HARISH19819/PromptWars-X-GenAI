@@ -1,17 +1,11 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
 import {
   TrendingUp,
   Award,
-  CheckCircle2,
-  Calendar,
-  Zap,
-  ArrowRight,
   Sparkles,
-  Target,
 } from 'lucide-react';
 
 export default function ProgressPage() {
