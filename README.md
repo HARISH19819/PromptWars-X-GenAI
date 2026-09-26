@@ -22,6 +22,8 @@ An enterprise-grade, student-first career readiness ecosystem unifying skill dia
 
 ---
 
+Live DEMO : https://promptwars-ten-red.vercel.app/
+
 ## 📌 Executive Summary
 
 Every year, millions of engineering students face a fragmented placement preparation journey: jumping blindly between YouTube playlists, LeetCode, aptitude PDFs, resume scanners, and random job portals. **Nothing communicates with each other.**
