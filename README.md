@@ -161,4 +161,6 @@ flowchart TD
     Heuristics <-->|High-Precision Synthesis| Gemini
     JobsAPI -->|Recruiter Demand Gaps| NBA
     WebRTC -->|Peer GD Engagement| UI
+Screenshot:
+   <img width="1779" height="874" alt="image" src="https://github.com/user-attachments/assets/4df33557-1c01-4e0e-be89-f2e67a076368" />
 
